@@ -1,0 +1,11 @@
+-o:build/Machine.Specifications.Boo.Specs.dll
+
+-r:build/Machine.Specifications.Boo.dll
+
+src/Machine.Specifications.Boo.Specs/AssemblyInfo.boo
+src/Machine.Specifications.Boo.Specs/AutoImportSpecs.boo
+src/Machine.Specifications.Boo.Specs/InheritanceSpecs.boo
+src/Machine.Specifications.Boo.Specs/WhenMacroSpecs.boo
+src/Machine.Specifications.Boo.Specs/SubjectMacroSpecs.boo
+src/Machine.Specifications.Boo.Specs/TagsSpecs.boo
+src/Machine.Specifications.Boo.Specs/UtilsSpecs.boo

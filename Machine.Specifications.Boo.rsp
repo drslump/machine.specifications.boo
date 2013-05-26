@@ -1,0 +1,12 @@
+#-r:Boo.Lang.Compiler.dll
+
+-o:build/Machine.Specifications.Boo.dll
+
+src/Machine.Specifications.Boo/utils.boo
+src/Machine.Specifications.Boo/AssemblyInfo.boo 
+src/Machine.Specifications.Boo/BecauseMacro.boo
+src/Machine.Specifications.Boo/CleanupMacro.boo
+src/Machine.Specifications.Boo/EstablishMacro.boo
+src/Machine.Specifications.Boo/ItMacro.boo
+src/Machine.Specifications.Boo/SubjectMacro.boo
+src/Machine.Specifications.Boo/WhenMacro.boo

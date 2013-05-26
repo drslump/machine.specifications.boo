@@ -1,34 +1,52 @@
 namespace Machine.Specifications.Boo.Specs
 
-import Msb
-import Boo.Lang.Compiler
-import Boo.Lang.Compiler.Ast
-import System.Linq.Enumerable from System.Core
+import Machine.Specifications.Boo
+
+/*
+# If reference given translate to typeof(Boo), if string use it, slicing sets tags
+subject 'Account' [foo]:
+
+  # Tags can be defined via attribute or by using hashtags in the string
+  when 'I call a method' [bar]:
+
+    establish:  # context:
+      foo = 10
+
+    it 'should return the argument given':
+      foo.ShouldEqual(10)
+      print foo
+
+    foo as int
+
+  when 'I call a prop':
+    foo as int = 20
+
+    # context:
+    #   foo = 20
+
+    it 'should return 20': foo.ShouldEqual(20)
+
+*/
+
 
 when a_context_has_a_base_contexts_name_as_the_second_argument, InheritanceSpecs:
   establish:
-    whenMacro = WhenMacro()
-    whenMacro.ModuleHandler = TestModuleHandler()
-    parameters = CompilerParameters()
-    parameters.Pipeline = CompilerPipeline()
-    whenMacro.ParametersWrapper = parameters
-    macro = MacroStatement()
-    macro.Arguments.Add([| context_name |])
-    macro.Arguments.Add([| base_context |])
-    
+    bar = 20
+
   because_of:
-    contextClassDef = whenMacro.ExpandGeneratorImpl(macro).ToList()[0]
+    foo = bar
     
   it "set the context's base class as being the base context":
-    contextClassDef.BaseTypes[0].ToString().ShouldEqual([| typeof(base_context) |].Type.ToString())
-  
-  macro as MacroStatement
-  whenMacro as WhenMacro
-  contextClassDef as ClassDefinition
+    GetFoo().ShouldEqual(20)
+
+  bar as int
+
+class InheritanceSpecs:
+  foo as int
+
+  def GetFoo():
+    return foo
 
 
-public class InheritanceSpecs:
-"""Description of InheritanceSpecs"""
-  public def constructor():
-    pass
+
 

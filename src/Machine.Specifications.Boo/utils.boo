@@ -19,11 +19,12 @@ def sanitize_text(text as string):
     bytes = Encoding.Convert(Encoding.UTF8, Encoding.ASCII, bytes)
     text = Encoding.ASCII.GetString(bytes)
 
-    # Replace spaces with underscores
-    text = /\s+/.Replace(text, '_')
-
     # Remove everything that is not a valid ident character
-    text = /[^_a-zA-Z0-9]/.Replace(text, string.Empty)
+    text = /[^\s_a-zA-Z0-9]/.Replace(text, string.Empty)
+
+    # Replace spaces with underscores
+    text = text.Trim()
+    text = /\s+/.Replace(text, '_')
 
     # Make sure it doesn't start with a number
     if char.IsNumber(text[0]):

@@ -34,7 +34,9 @@ macro when:
 
     # Configure based on the title
     name = title.ToCodeString()
-    classDef.Name = 'when_' + sanitize_text(name)
+    classDef.Name = sanitize_text(name)
+    if not classDef.Name.StartsWith('when_'):
+        classDef.Name = 'when_' + classDef.Name
     classDef.LexicalInfo = when.LexicalInfo
   
     if len(when.Arguments) > 1:
