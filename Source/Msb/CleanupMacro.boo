@@ -1,9 +1,7 @@
-namespace Msb
+namespace Machine.Specifications.Boo
 
-import System
-import Boo.Lang.Compiler
-import Boo.Lang.Compiler.Ast
 
 macro cleanup:
-  body = cleanup.Body
-  yield DeclarationStatement(Declaration("after_", [| typeof(Machine.Specifications.Cleanup) |].Type), [| { $body } |])
+    field = field_factory('cleanup_', 'Machine.Specifications.Cleanup', cleanup.Body)
+    field.LexicalInfo = cleanup.LexicalInfo
+    yield field

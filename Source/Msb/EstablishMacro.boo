@@ -1,9 +1,14 @@
-namespace Msb
+namespace Machine.Specifications.Boo
 
-import System
-import Boo.Lang.Compiler
-import Boo.Lang.Compiler.Ast
 
 macro establish:
-  body = establish.Body
-  yield DeclarationStatement(Declaration("context_", [| typeof(Machine.Specifications.Establish) |].Type), [| { $body } |])
+    field = field_factory('context_', 'Machine.Specifications.Establish', establish.Body)
+    field.LexicalInfo = establish.LexicalInfo
+    yield field
+
+
+macro context:
+    field = field_factory('context_', 'Machine.Specifications.Establish', context.Body)
+    field.LexicalInfo = context.LexicalInfo
+    yield field
+

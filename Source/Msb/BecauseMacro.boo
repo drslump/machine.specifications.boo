@@ -1,9 +1,12 @@
-﻿namespace Msb
+﻿namespace Machine.Specifications.Boo
 
-import System
-import Boo.Lang.Compiler
-import Boo.Lang.Compiler.Ast
 
 macro because:
-  body = because.Body
-  yield DeclarationStatement(Declaration("of_", [| typeof(Machine.Specifications.Because) |].Type), [| { $body } |])
+    field = field_factory('of_', 'Machine.Specifications.Because', because.Body)
+    field.LexicalInfo = because.LexicalInfo
+    yield field
+
+macro because_of:
+    field = field_factory('of_', 'Machine.Specifications.Because', because_of.Body)
+    field.LexicalInfo = because_of.LexicalInfo
+    yield field

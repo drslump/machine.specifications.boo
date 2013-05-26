@@ -1,61 +1,68 @@
-namespace Msb
+namespace Machine.Specifications.Boo
 
-import System
-import Boo.Lang.Compiler
 import Boo.Lang.Compiler.Ast
-import System.Linq.Enumerable from System.Core
+import Boo.Lang.Compiler.TypeSystem
 
-public class WhenMacro(LexicalInfoPreservingGeneratorMacro):
-  
-  _moduleHandler as ModuleHandler
-  public ModuleHandler as ModuleHandler:
-    get:
-      return ModuleHandler() if _moduleHandler is null
-      return _moduleHandler
-    set:
-      _moduleHandler = value
-      
-  _parametersWrapper as CompilerParameters
-  public ParametersWrapper as CompilerParameters:
-    get:
-      return self.Parameters if _parametersWrapper is null
-      return _parametersWrapper
-    set:
-      _parametersWrapper = value
-  
-  public override def ExpandGeneratorImpl(macro as MacroStatement) as Node*:
-    raise "Only a string or safe identifier name is allowed for names of 'when/context' blocks.. ex: 'when \"foo\"' or 'when foo'  " if not macro.Arguments[0] isa ReferenceExpression and not macro.Arguments[0] isa StringLiteralExpression
-    raise "Only a safe identifier name is valid as the second argument to a when block. ex: 'when \"foo\", bar' or 'when foo, bar'" if macro.Arguments.Count > 1 and not macro.Arguments[1] isa ReferenceExpression
-    raise "Only one or two arguments is allowed to a when/context block.. ex: 'when foo, bar' or 'when \"foo\"'" if macro.Arguments.Count > 2 or macro.Arguments.Count == 0
+
+macro when:
+    if len(when.Arguments) < 1 or len(when.Arguments) > 2:
+        raise "Only one or two arguments are allowed to a when/context block.. ex: 'when foo, bar' or 'when \"foo\"'" 
+    if len(when.Arguments) > 1 and not when.Arguments[1] isa ReferenceExpression:
+        raise "Only a safe identifier name is valid as the second argument to a when block. ex: 'when \"foo\", bar' or 'when foo, bar'"
+
+    title = when.Arguments[0]
     
-    className as string
-    className = macro.Arguments[0].ToCodeString()
-    helper = SafeIdentifierHelper()
-    fieldBuilder = FieldBuilder()
-    
-    className = helper.ToBoxcarCase(className)
-    className = "when_" + className if not className.ToLower().StartsWith("when");
+    # TODO: This breaks if the macro body contains attributes
     classDef = [|
-      public class $(ReferenceExpression(className)):
-        pass
+        class CLS:
+            $(when.Body)
     |]
-    
-    classDef.BaseTypes.Add([| typeof($(macro.Arguments[1])) |].Type) if macro.Arguments.Count > 1
-    
-    for i as Statement in macro.Body.Statements:
-      if i isa DeclarationStatement:
-        statement as DeclarationStatement = i
-        field = fieldBuilder.BuildProtectedStaticFieldFromDeclarationStatement(statement)
-        classDef.Members.Add(field)
-    
-    module = ModuleHandler.GetModuleFromNode(macro)
-    hasExtensionMethodImport = (i for i in module.Imports if i.Namespace.Equals("Machine.Specifications.NUnitShouldExtensionMethods")).ToList().Count > 0
-    if not hasExtensionMethodImport:
-      module.Imports.Add(Import("Machine.Specifications.NUnitShouldExtensionMethods", ReferenceExpression("Machine.Specifications.NUnit"), null))
-      pp = ParametersWrapper.Pipeline
-      pp.AfterStep += def(sender, e as CompilerStepEventArgs):
-        if e.Step isa Steps.MacroAndAttributeExpansion:
-          pp.Get(typeof(Steps.InitializeNameResolutionService)).Run()
-          pp.Get(typeof(Steps.BindNamespaces)).Run()
-      
+
+    # Apply tags
+    if se = title as SlicingExpression:
+        tags = Attribute(when.LexicalInfo)
+        tags.Name = 'Machine.Specifications.TagsAttribute'
+        for idx in se.Indices:
+            tags.Arguments.Add(
+                StringLiteralExpression(Value: idx.Begin.ToCodeString())
+            )
+        classDef.Attributes.Add(tags)
+        title = se.Target 
+
+    if title.NodeType not in (NodeType.ReferenceExpression, NodeType.StringLiteralExpression):
+        raise "Only a string or safe identifier name is allowed for names of 'when/context' blocks.. ex: 'when \"foo\"' or 'when foo'"
+
+    # Configure based on the title
+    name = title.ToCodeString()
+    classDef.Name = 'when_' + sanitize_text(name)
+    classDef.LexicalInfo = when.LexicalInfo
+  
+    if len(when.Arguments) > 1:
+        classDef.BaseTypes.Add([| typeof($(when.Arguments[1])) |].Type)
+
+    # Any field which is not part of the DSL should be static and protected
+    fields = [f for f in classDef.Members if f.NodeType == NodeType.Field]
+    for field as Field in fields:
+        if tr = field.Type as SimpleTypeReference:
+            continue if tr.Name.StartsWith('Machine.Specifications.')
+        field.Modifiers |= TypeMemberModifiers.Static | TypeMemberModifiers.Protected
+
+    # Make sure MSpec is referenced
+    asm = Parameters.FindAssembly('Machine.Specifications')
+    if not asm:
+        asm = Parameters.LoadAssembly('Machine.Specifications', false)
+        if asm:
+            Parameters.References.Add(asm)
+        else:
+            raise 'Machine.Specifications assembly not found'
+
+    # We need to explicitly import the namespace for extension ShouldX methods to work
+    mod = when.GetAncestor[of Module]()
+    if not mod.Imports.Contains({ _ as Import | _.Namespace == 'Machine.Specifications' }):
+        imp = Import()
+        imp.Expression = ReferenceExpression('Machine.Specifications')
+        imp.Entity = NameResolutionService.ResolveQualifiedName('Machine.Specifications')
+        ImportAnnotations.MarkAsUsed(imp)
+        mod.Imports.Add(imp)
+
     yield classDef
