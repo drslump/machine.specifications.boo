@@ -1,4 +1,4 @@
-## Machine.Specifications.Boo -- a Boo DSL for composing MSpec tests
+## Machine.Specifications.Boo
 
 Machine.Specifications.Boo is a [Boo](http://boo.codehaus.org)-based DSL for [Machine.Specifications](http://github.com/machine/machine.specifications) (aka MSpec). It is released under the terms of the [MIT License](http://www.opensource.org/licenses/mit-license.php). 
 
