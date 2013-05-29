@@ -62,7 +62,13 @@ macro when:
     mod = when.GetAncestor[of Module]()
     if not mod.Imports.Contains({ _ as Import | _.Namespace == 'Machine.Specifications' }):
         imp = Import()
-        imp.Expression = ReferenceExpression('Machine.Specifications')
+
+        # Work around Boo compiler changes to the AST model (>0.9.6 uses an expression)
+        if imp.GetType().GetProperty('Expression'):
+            (imp as duck).Expression = ReferenceExpression('Machine.Specifications')
+        else:
+            (imp as duck).Namespace = 'Machine.Specifications'
+
         imp.Entity = NameResolutionService.ResolveQualifiedName('Machine.Specifications')
         ImportAnnotations.MarkAsUsed(imp)
         mod.Imports.Add(imp)

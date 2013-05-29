@@ -31,6 +31,6 @@ macro subject(expr as Expression):
 
     for st in subject.Body.Statements:
         if tms = st as TypeMemberStatement:
-            tms.TypeMember.Attributes.AddRange(attrs)
-
-        yield st
+            for attr in attrs:
+                tms.TypeMember.Attributes.Add(attr)
+            yield tms
