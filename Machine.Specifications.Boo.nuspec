@@ -12,6 +12,9 @@
     <releaseNotes>Full refactor to support latest Boo and MSpec versions.</releaseNotes>
     <copyright>Copyright 2013 Iván -DrSlump- Montes, Copyright 2009 olsonjeffery</copyright>
     <tags>mspec boo dsl test bdd</tags>
+    <dependencies>
+      <dependency id="Machine.Specifications" version="0.5.12" />
+    </dependencies>
   </metadata>
   <files> 
     <file src="build/Machine.Specifications.Boo.dll" target="lib/net40" /> 
