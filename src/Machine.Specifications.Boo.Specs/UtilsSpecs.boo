@@ -1,6 +1,6 @@
 namespace Machine.Specifications.Boo.Specs
 
-import Machine.Specifications.Boo
+import Machine.Specifications.Boo from "Machine.Specifications.Boo"
 
 
 when "normalizing a name with spaces":
@@ -30,5 +30,3 @@ when "normalizing a name with non valid identifier chars":
   because:   input = sanitize_text(input)
   it "should remove them": 
     input.ShouldEqual('dolar_hyphen_percent')
-
-  

@@ -1,7 +1,7 @@
 namespace Machine.Specifications.Boo.Specs
 
 import Machine.Specifications
-import Machine.Specifications.Boo
+import Machine.Specifications.Boo from "Machine.Specifications.Boo"
 
 
 when a_context_is_reference_and_has_tags [foo, bar]:
