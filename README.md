@@ -2,7 +2,7 @@
 
 Machine.Specifications.Boo is a [Boo](http://boo.codehaus.org)-based DSL for [Machine.Specifications](http://github.com/machine/machine.specifications) (aka MSpec). It is released under the terms of the [MIT License](http://www.opensource.org/licenses/mit-license.php). 
 
-> This version is actually a fork from the original work by @olsonjeffery [repo](http://github.com/olsonjeffery/machine.specifications.boo).
+> This version is actually a fork from the original work by [olsonjeffery](http://github.com/olsonjeffery/machine.specifications.boo).
 
 ### Installation
 
