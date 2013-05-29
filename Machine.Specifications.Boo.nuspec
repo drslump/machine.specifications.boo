@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Machine.Specifications.Boo</id>
+    <version>0.1.0</version>
+    <authors>Iván -DrSlump- Montes, olsonjeffery</authors>
+    <owners>drslump</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/drslump/Machine.Specifications.Boo</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>a boo dsl for mspec</description>
+    <releaseNotes>Full refactor to support latest Boo and MSpec versions.</releaseNotes>
+    <copyright>Copyright 2013 Iván -DrSlump- Montes, Copyright 2009 olsonjeffery</copyright>
+    <tags>mspec boo dsl test bdd</tags>
+  </metadata>
+  <files> 
+    <file src="build/Machine.Specifications.Boo.dll" target="lib/net40" /> 
+    <file src="lib/Boo.Lang.dll" target="lib/net40" /> 
+  </files>
+</package>
