@@ -33,4 +33,4 @@ macro subject(expr as Expression):
         if tms = st as TypeMemberStatement:
             for attr in attrs:
                 tms.TypeMember.Attributes.Add(attr)
-            yield tms
+        yield st

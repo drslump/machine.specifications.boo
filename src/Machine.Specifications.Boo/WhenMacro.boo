@@ -2,6 +2,8 @@ namespace Machine.Specifications.Boo
 
 import Boo.Lang.Compiler.Ast
 import Boo.Lang.Compiler.TypeSystem
+import Boo.Lang.PatternMatching
+import Boo.Lang.Compiler
 
 
 macro when:
@@ -13,10 +15,32 @@ macro when:
     title = when.Arguments[0]
     
     # TODO: This breaks if the macro body contains attributes
-    classDef = [|
-        class CLS:
-            $(when.Body)
-    |]
+    # classDef = [|
+    #     class CLS:
+    #         pass #$(when.Body)
+    # |]
+
+    cls = ClassDefinition(when.LexicalInfo)
+    for st in when.Body.Statements:
+        match st:
+            case ExpressionStatement(Expression: be=BinaryExpression(
+                Operator: BinaryOperatorType.Assign,
+                Left: re=ReferenceExpression()
+            )):
+                tm = Field(be.LexicalInfo, Name: re.Name, Initializer: be.Right)
+                cls.Members.Add(tm)
+            
+            case dst=DeclarationStatement(Declaration: dc=Declaration()):
+                tm = Field(dc.LexicalInfo, Name: dc.Name, Type: dc.Type, Initializer: dst.Initializer)
+                cls.Members.Add(tm)
+
+            case TypeMember():
+                cls.Members.Add(tm)
+            case TypeMemberStatement(TypeMember: tm=TypeMember()):
+                cls.Members.Add(tm)
+            otherwise:
+                print 'ERROR', st.NodeType, st
+
 
     # Apply tags
     if se = title as SlicingExpression:
@@ -26,7 +50,7 @@ macro when:
             tags.Arguments.Add(
                 StringLiteralExpression(Value: idx.Begin.ToCodeString())
             )
-        classDef.Attributes.Add(tags)
+        cls.Attributes.Add(tags)
         title = se.Target 
 
     if title.NodeType not in (NodeType.ReferenceExpression, NodeType.StringLiteralExpression):
@@ -34,16 +58,16 @@ macro when:
 
     # Configure based on the title
     name = title.ToCodeString()
-    classDef.Name = sanitize_text(name)
-    if not classDef.Name.StartsWith('when_'):
-        classDef.Name = 'when_' + classDef.Name
-    classDef.LexicalInfo = when.LexicalInfo
+    cls.Name = sanitize_text(name)
+    if not cls.Name.StartsWith('when_'):
+        cls.Name = 'when_' + cls.Name
+    cls.LexicalInfo = when.LexicalInfo
   
     if len(when.Arguments) > 1:
-        classDef.BaseTypes.Add([| typeof($(when.Arguments[1])) |].Type)
+        cls.BaseTypes.Add([| typeof($(when.Arguments[1])) |].Type)
 
     # Any field which is not part of the DSL should be static and protected
-    fields = [f for f in classDef.Members if f.NodeType == NodeType.Field]
+    fields = [f for f in cls.Members if f.NodeType == NodeType.Field]
     for field as Field in fields:
         if tr = field.Type as SimpleTypeReference:
             continue if tr.Name.StartsWith('Machine.Specifications.')
@@ -73,4 +97,6 @@ macro when:
         ImportAnnotations.MarkAsUsed(imp)
         mod.Imports.Add(imp)
 
-    yield classDef
+
+    # print cls.ToCodeString()
+    yield cls

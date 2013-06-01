@@ -10,3 +10,4 @@ src/Machine.Specifications.Boo/EstablishMacro.boo
 src/Machine.Specifications.Boo/ItMacro.boo
 src/Machine.Specifications.Boo/SubjectMacro.boo
 src/Machine.Specifications.Boo/WhenMacro.boo
+src/Machine.Specifications.Boo/Run.boo
