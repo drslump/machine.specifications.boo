@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>Machine.Specifications.Boo</id>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <authors>Iván -DrSlump- Montes, olsonjeffery</authors>
     <owners>drslump</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/drslump/Machine.Specifications.Boo</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>a boo dsl for mspec</description>
-    <releaseNotes>Full refactor to support latest Boo and MSpec versions.</releaseNotes>
+    <releaseNotes>Includes a very simple console reporter for dynamic assemblies.</releaseNotes>
     <copyright>Copyright 2013 Iván -DrSlump- Montes, Copyright 2009 olsonjeffery</copyright>
     <tags>mspec boo dsl test bdd</tags>
     <dependencies>
