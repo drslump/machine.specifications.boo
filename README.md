@@ -86,8 +86,29 @@ Behold! Machine.Specifications.Boo!
 
 There. Much more readable. All that is required is to import `Machine.Specifications.Boo` to get access to the DSL and MSpec's functionality.
 
-Of course, since it lacks the whiz-bang features that you can get with C# + Visual Studio + ReSharper + TD.Net, etc, MSpec.Boo might not be the most appropriate choice if you work primarily with these tools. But if you're more interested in composing less-noisy specs than tooling support and/or doing all of your work in Boo, why not at least write your tests in a manner that is a bit easier on the eyes?
+Of course, since it lacks the whiz-bang features that you can get with C# + Visual Studio + ReSharper + TD.Net, etc, MSpec.Boo might not be the most appropriate choice if you work primarily with these tools (check the NUnit compatibility section). But if you're more interested in composing less-noisy specs than tooling support and/or doing all of your work in Boo, why not at least write your tests in a manner that is a bit easier on the eyes?
 
+
+### Even less noise
+
+For simple *establish* and *because* logic you can directly assign values in the
+body of the `when` macro.
+
+    when "doing something":
+
+      text as string = 'foo bar baz'
+      result as string = text.ToUpper()
+
+      it "should be uppercase":
+        result.ShouldEqual('FOO BAR BAZ')
+
+
+### Tagging your specs
+
+To apply tags or categories to your specs just name them between square brackets.
+
+    when "doing something" [foo, bar]
+      ...
 
 ### Inheritance in Machine.Specifications.Boo
 
@@ -122,7 +143,26 @@ It'd be trivial to add defining methods in contexts, but they just get in the wa
 
 Also, as a quick bit of advice: if you find yourself having a ton of helper methods to make your `establish` blocks less cluttered and more intention-revealing, this is a code smell that you should consider refactoring these helper methods in line with the [Object Mother](http://martinfowler.com/bliki/ObjectMother.html) pattern.
 
+
 ### Running your specs
 
 The assemblies generated produce plain ol' MSpec tests, you can just run them as usual.
+
+
+### NUnit compatibility
+
+NUnit is sort of the industry standard for unit testing in .Net, so it's supported
+by IDEs, CI servers, metrics tools...
+
+Machine.Specifications.Boo can generate assemblies compatible with NUnit too, to do
+so you can either use the compiler define `NUnitCompat` to apply it to all your tests
+or just annotate individual files with `NUnitCompat` like in the following example:
+
+    import Machine.Specifications.Boo
+
+    NUnitCompat
+
+    when "calling the service":
+      it "should return an object":
+        ...
 

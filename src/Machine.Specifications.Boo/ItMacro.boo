@@ -14,3 +14,15 @@ macro it:
     field.LexicalInfo = it.LexicalInfo
 
     yield field
+
+    # method = [|
+    # 	def $('it_' + field.Name)():
+    # 		self.$(field.Name)()
+    # |]
+    # method.LexicalInfo = it.LexicalInfo
+
+    # nunit = Attribute(it.LexicalInfo)
+    # nunit.Name = 'NUnit.Framework.TestAttribute'
+    # method.Attributes.Add(nunit)
+
+    # yield method

@@ -21,26 +21,33 @@ macro when:
     # |]
 
     cls = ClassDefinition(when.LexicalInfo)
-    for st in when.Body.Statements:
-        match st:
-            case ExpressionStatement(Expression: be=BinaryExpression(
-                Operator: BinaryOperatorType.Assign,
-                Left: re=ReferenceExpression()
-            )):
-                tm = Field(be.LexicalInfo, Name: re.Name, Initializer: be.Right)
-                cls.Members.Add(tm)
-            
-            case dst=DeclarationStatement(Declaration: dc=Declaration()):
-                tm = Field(dc.LexicalInfo, Name: dc.Name, Type: dc.Type, Initializer: dst.Initializer)
-                cls.Members.Add(tm)
 
-            case TypeMember():
-                cls.Members.Add(tm)
-            case TypeMemberStatement(TypeMember: tm=TypeMember()):
-                cls.Members.Add(tm)
-            otherwise:
-                print 'ERROR', st.NodeType, st
+    def process(statements as StatementCollection):
+        for st in statements:
+            match st:
+                case ExpressionStatement(Expression: be=BinaryExpression(
+                    Operator: BinaryOperatorType.Assign,
+                    Left: re=ReferenceExpression()
+                )):
+                    f = Field(be.LexicalInfo, Name: re.Name, Initializer: be.Right)
+                    cls.Members.Add(f)
+                
+                case dst=DeclarationStatement(Declaration: dc=Declaration()):
+                    f = Field(dc.LexicalInfo, Name: dc.Name, Type: dc.Type, Initializer: dst.Initializer)
+                    cls.Members.Add(f)
 
+                case tm=TypeMember():
+                    cls.Members.Add(tm)
+                case TypeMemberStatement(TypeMember: tm=TypeMember()):
+                    cls.Members.Add(tm)
+
+                case blk=Block():
+                    process(blk.Statements)
+
+                otherwise:
+                    print 'ERROR', st.NodeType, st
+
+    process(when.Body.Statements)
 
     # Apply tags
     if se = title as SlicingExpression:
@@ -56,7 +63,7 @@ macro when:
     if title.NodeType not in (NodeType.ReferenceExpression, NodeType.StringLiteralExpression):
         raise "Only a string or safe identifier name is allowed for names of 'when/context' blocks.. ex: 'when \"foo\"' or 'when foo'"
 
-    # Configure based on the title
+    # Normalize the title
     name = title.ToCodeString()
     cls.Name = sanitize_text(name)
     if not cls.Name.StartsWith('when_'):
@@ -97,6 +104,56 @@ macro when:
         ImportAnnotations.MarkAsUsed(imp)
         mod.Imports.Add(imp)
 
+    if mod['NUnitCompat'] or Parameters.Defines.ContainsKey('NUnitCompat'):
+        # Make sure we can find the NUnit reference
+        imp = Import()
+        imp.Expression = ReferenceExpression('NUnit.Framework')
+        imp.Entity = NameResolutionService.ResolveQualifiedName('NUnit.Framework')
+        ImportAnnotations.MarkAsUsed(imp)
+        mod.Imports.Add(imp)
 
-    # print cls.ToCodeString()
+        nunit = Attribute(when.LexicalInfo)
+        nunit.Name = 'TestFixtureAttribute'
+        cls.Attributes.Add(nunit)
+
+        def typename(member as TypeMember):
+            field = member as Field
+            if field and field.Type isa SimpleTypeReference:
+                return (field.Type as SimpleTypeReference).Name
+            return null
+
+        method = [|
+            [TestFixtureSetUp]
+            def Establish_and_Because():
+                pass
+        |]
+        cls.Members.Add(method)
+
+        members = [m for m in cls.Members if typename(m) == 'Machine.Specifications.Establish']
+        for member as TypeMember in members:
+            method.Body.Statements.Add(ExpressionStatement([| self.$(member.Name)() |]))
+        members = [m for m in cls.Members if typename(m) == 'Machine.Specifications.Because']
+        for member as TypeMember in members:
+            method.Body.Statements.Add(ExpressionStatement([| self.$(member.Name)() |]))
+
+        method = [|
+            [NUnit.Framework.TestFixtureTearDownAttribute]
+            def Cleanup():
+                pass
+        |]
+        members = [m for m in cls.Members if typename(m) == 'Machine.Specifications.Cleanup']
+        for member as TypeMember in members:
+            method.Body.Statements.Add(ExpressionStatement([| self.$(member.Name)() |]))
+
+        members = [m for m in cls.Members if typename(m) == 'Machine.Specifications.It']
+        for member as TypeMember in members:
+            method = [|
+                [Test]
+                def $('it_' + member.Name)():
+                    self.$(member.Name)()
+            |]
+            cls.Members.Add(method)
+
+        # print cls.ToCodeString()
+
     yield cls

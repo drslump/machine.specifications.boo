@@ -11,3 +11,4 @@ src/Machine.Specifications.Boo/ItMacro.boo
 src/Machine.Specifications.Boo/SubjectMacro.boo
 src/Machine.Specifications.Boo/WhenMacro.boo
 src/Machine.Specifications.Boo/Run.boo
+src/Machine.Specifications.Boo/NUnit.boo

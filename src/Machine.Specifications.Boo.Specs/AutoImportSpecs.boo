@@ -2,6 +2,8 @@ namespace Foo
 
 import Machine.Specifications.Boo
 
+NUnitCompat true
+
 
 when "having imported MSpec.Boo and defining a when block":
 

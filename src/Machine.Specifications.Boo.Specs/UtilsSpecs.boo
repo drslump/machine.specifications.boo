@@ -2,6 +2,7 @@ namespace Machine.Specifications.Boo.Specs
 
 import Machine.Specifications.Boo from "Machine.Specifications.Boo"
 
+NUnitCompat
 
 when "normalizing a name with spaces":
   input as string
