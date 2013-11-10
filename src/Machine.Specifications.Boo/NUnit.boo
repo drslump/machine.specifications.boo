@@ -3,6 +3,7 @@ namespace Machine.Specifications.Boo
 import Boo.Lang.Compiler.Ast
 
 
+// TODO: Convert this to an assembly/module attribute
 macro NUnitCompat:
     if not len(NUnitCompat.Arguments):
         arg = BoolLiteralExpression(true)

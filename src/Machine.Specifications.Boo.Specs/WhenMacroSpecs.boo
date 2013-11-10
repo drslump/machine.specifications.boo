@@ -26,4 +26,4 @@ when "context setup is not wrapped in a context macro":
   b = 20
 
   it "should initialize variables":
-  	a.ShouldEqual(10)
+    a.ShouldEqual(10)

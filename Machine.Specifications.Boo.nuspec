@@ -13,11 +13,13 @@
     <copyright>Copyright 2013 Iván -DrSlump- Montes, Copyright 2009 olsonjeffery</copyright>
     <tags>mspec boo dsl test bdd nunit</tags>
     <dependencies>
-      <dependency id="Machine.Specifications" version="0.5.12" />
+      <dependency id="Boo.Lang" version="0.9.4" />
+      <dependency id="Machine.Specifications" version="0.5.16" />
+      <dependency id="NUnit" version="2.6.3" />
     </dependencies>
   </metadata>
   <files> 
     <file src="build/Machine.Specifications.Boo.dll" target="lib/net40" /> 
-    <file src="lib/Boo.Lang.dll" target="lib/net40" /> 
+    <!-- file src="lib/Boo.Lang.dll" target="lib/net40" / -->
   </files>
 </package>

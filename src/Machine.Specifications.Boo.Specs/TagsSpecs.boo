@@ -8,6 +8,7 @@ when a_context_is_reference_and_has_tags [foo, bar]:
     attrs = GetType().GetCustomAttributes(TagsAttribute, false)
     len(attrs).ShouldEqual(1)
 
+
 when 'a_context_is_string_and_has_tags' [foo, bar]:
   it "should have a tags attribute":
     attrs = GetType().GetCustomAttributes(TagsAttribute, false)

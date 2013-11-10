@@ -1,8 +1,9 @@
 -o:build/Machine.Specifications.Boo.Specs.dll
 
+-r:packages/Machine.Specifications.0.5.16/lib/net40/Machine.Specifications.dll
+-r:packages/NUnit.2.6.3/lib/nunit.framework.dll
 -r:build/Machine.Specifications.Boo.dll
 
-src/Machine.Specifications.Boo.Specs/AssemblyInfo.boo
 src/Machine.Specifications.Boo.Specs/AutoImportSpecs.boo
 src/Machine.Specifications.Boo.Specs/InheritanceSpecs.boo
 src/Machine.Specifications.Boo.Specs/WhenMacroSpecs.boo

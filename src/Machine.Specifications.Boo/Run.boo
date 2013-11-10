@@ -1,21 +1,23 @@
 namespace Machine.Specifications.Boo
 
-import Machine.Specifications
+import System
+import System.Reflection
+
+# TODO: Investigate why Boo can't find the assembly without using `from`
+import Machine.Specifications from "Machine.Specifications"
 import Machine.Specifications.Runner
 import Machine.Specifications.Runner.Impl
-import System.Reflection
-import System
 
 
 internal class SimpleConsoleListener(RunListenerBase):
 
-    _passing as int = 0
+    _passed as int = 0
     _specs as int = 0
 
     override def OnSpecificationEnd(spec as SpecificationInfo, result as Result):
         _specs++
         if result.Passed:
-            _passing++
+            _passed++
         else:
             preserving Console.ForegroundColor:
                 Console.ForegroundColor = ConsoleColor.Red
@@ -25,21 +27,22 @@ internal class SimpleConsoleListener(RunListenerBase):
 
     override def OnRunEnd():
         preserving Console.ForegroundColor:
-            if _passing == _specs:
+            if _passed == _specs:
                 Console.ForegroundColor = ConsoleColor.Green
             else:
                 Console.ForegroundColor = ConsoleColor.Yellow
-            print "Passed $(_passing) / $(_specs) specs"
+            print "Passed $(_passed) / $(_specs) specs"
 
     override def OnFatalError(exception as ExceptionResult):
         print exception
 
     AllPassed:
-        get: return _passing == _specs
+        get: return _passed == _specs
 
 
 def RunSpecs() as bool:
     return RunSpecs(Assembly.GetCallingAssembly())
+
 
 def RunSpecs(asm as Assembly) as bool:
     listener = SimpleConsoleListener()

@@ -1,4 +1,4 @@
-#-r:Boo.Lang.Compiler.dll
+-lib:packages/Machine.Specifications.0.5.16/lib/net40
 
 -o:build/Machine.Specifications.Boo.dll
 

@@ -109,6 +109,7 @@ macro when:
         imp = Import()
         imp.Expression = ReferenceExpression('NUnit.Framework')
         imp.Entity = NameResolutionService.ResolveQualifiedName('NUnit.Framework')
+        imp.AssemblyReference = ReferenceExpression('NUnit.Framework')
         ImportAnnotations.MarkAsUsed(imp)
         mod.Imports.Add(imp)
 
