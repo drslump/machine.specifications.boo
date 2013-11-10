@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>Machine.Specifications.Boo</id>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <authors>Iván -DrSlump- Montes, olsonjeffery</authors>
     <owners>drslump</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/drslump/Machine.Specifications.Boo</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>a boo dsl for mspec</description>
-    <releaseNotes>NUnit compatibility.</releaseNotes>
+    <releaseNotes>Better dependency management.</releaseNotes>
     <copyright>Copyright 2013 Iván -DrSlump- Montes, Copyright 2009 olsonjeffery</copyright>
     <tags>mspec boo dsl test bdd nunit</tags>
     <dependencies>
@@ -18,8 +18,8 @@
       <dependency id="NUnit" version="2.6.3" />
     </dependencies>
   </metadata>
-  <files> 
+  <files>
+    <file src="README.md" />
     <file src="build/Machine.Specifications.Boo.dll" target="lib/net40" /> 
-    <!-- file src="lib/Boo.Lang.dll" target="lib/net40" / -->
   </files>
 </package>
